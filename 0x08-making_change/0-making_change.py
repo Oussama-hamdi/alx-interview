@@ -3,24 +3,14 @@
 
 
 def makeChange(coins, total):
-    memo = {}
+    if total <= 0:
+        return 0
 
-    def helper(total):
-        if total < 0:
-            return -1
-        if total == 0:
-            return 0
-        if total in memo:
-            return memo[total]
+    dp = [float('inf')] * (total + 1)
+    dp[0] = 0
 
-        min_coins = float('inf')
-        for coin in coins:
-            remaining = total - coin
-            result = helper(remaining)
-            if result >= 0:
-                min_coins = min(min_coins, result + 1)
+    for coin in coins:
+        for i in range(coin, total + 1):
+            dp[i] = min(dp[i], dp[i - coin] + 1)
 
-        memo[total] = min_coins if min_coins != float('inf') else -1
-        return memo[total]
-
-    return helper(total)
+    return dp[total] if dp[total] != float('inf') else -1
